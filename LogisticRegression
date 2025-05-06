@@ -1,0 +1,27 @@
+from sklearn.linear_model import LinearRegression
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+
+df = pd.read_csv('/multiple_linear_regression_dataset.csv')
+x = df[['age','experience']]
+y = df['income']
+plt.scatter(x['age'],y)
+model = LinearRegression()
+model.fit(x, y)
+
+y_intercept = model.intercept_
+x_slope = model.coef_[0]
+print("Slope Coefficients:", x_slope)
+print("Y-Intercept:", y_intercept)
+plt.show()
+# Predict for custom values
+new_x = np.array([[20,0],[30,6],[35,8],[40,2]])
+predict_z = model.predict(new_x)
+
+# Plot predicted salary vs Experience
+plt.scatter(new_x[:, 0], predict_z, color='yellow')  # x-axis = Experience
+plt.xlabel("Experience")
+plt.ylabel("Predicted Salary")
+plt.title("Predicted Salary vs Experience")
+plt.show()
