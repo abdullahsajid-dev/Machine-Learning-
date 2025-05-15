@@ -1,0 +1,40 @@
+import scipy.cluster.hierarchy as sch
+import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
+
+# Load the Iris dataset
+df = pd.read_csv('/content/Iris.csv')
+
+# Extract features (excluding the first column if it's ID, and the species column)
+X = df.iloc[:, 1:-1].values  # This assumes species is the last column
+
+# Convert to numeric (though iris data should already be numeric)
+X = pd.DataFrame(X).apply(pd.to_numeric, errors='coerce').values
+
+# Remove rows with NaN values
+if np.isnan(X).any():
+    X = X[~np.isnan(X).any(axis=1)]
+    print("Warning: NaN values were found and removed")
+else:
+    print("No NaN values found in the dataset.")
+
+# Check if X is empty
+if X.size == 0:
+    raise ValueError("Error: Input data is empty after removing NaN values.")
+else:
+    # Generate the linkage matrix
+    linkage_matrix = sch.linkage(X, method='ward')
+
+    # Plot the dendrogram with proper labels
+    plt.figure(figsize=(13, 5))
+    dendrogram = sch.dendrogram(
+        linkage_matrix,
+        labels=df.iloc[:, -1].values,  # Using species as labels
+        leaf_rotation=90
+    )
+    plt.title('Dendrogram for Iris Dataset')
+    plt.xlabel('Data Points (with Species Labels)')
+    plt.ylabel('Distance')
+    plt.tight_layout()  # Prevents label cutoff
+    plt.show()
